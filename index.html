@@ -59,7 +59,8 @@
           <p class="hero-sponsor" id="heroSponsor">AutoSpa · Productions · Edits · Products</p>
           <p class="hero-sponsor" id="heroPartner" hidden>In partnership with Los Vakeros &amp; IC Ent.</p>
           <div class="hero-cta">
-            <a class="btn btn-red js-consult" data-consult="consultationPhone15" href="sms:+13853468125">Free Consultation</a>
+            <a class="btn btn-red js-consult" data-consult="consultationPhone15" data-book-label="Phone consultation" href="https://app.acuityscheduling.com/schedule.php?owner=40723502&amp;appointmentType=100415803">Phone consultation</a>
+            <a class="btn btn-ghost js-consult" data-consult="consultationInPerson" data-book-label="In-person consultation" href="https://app.acuityscheduling.com/schedule.php?owner=40723502&amp;appointmentType=100415812">In-person consultation</a>
             <a class="btn btn-ghost" href="#services" data-goto="services">AutoSpa pricing</a>
             <a class="btn btn-ghost" href="og-products/">O.G.Products</a>
           </div>
@@ -70,7 +71,7 @@
     <main class="wrap" id="tabPanels">
       <section id="home" class="tab-panel" role="tabpanel" aria-labelledby="tab-home">
         <div class="sec-head"><h2>Four brands</h2><div class="rule" aria-hidden="true"></div></div>
-        <p class="sec-intro">This site is the front door. Acuity Scheduling takes the booking and the deposit once each service link is connected. Until then, text <a class="js-phone" href="sms:+13853468125">385-346-8125</a>. Detailing, filming, and editing share one calendar so they don't overlap.</p>
+        <p class="sec-intro">This site is the front door. Acuity Scheduling takes the booking and the deposit. Text <a class="js-phone" href="sms:+13853468125">385-346-8125</a> anytime. Detailing, filming, and editing share one calendar so they don't overlap.</p>
         <div class="brand-grid">
           <article class="brand-card">
             <h3>O.G.AutoSpa</h3>
@@ -169,6 +170,48 @@
           <article class="svc">
             <div class="svc-num">04</div>
             <div>
+              <h3>Standard Interior Only</h3>
+              <p>The cabin on its own: vacuum, wipe-down, and a reset of the interior.</p>
+              <div data-tiers="standardInteriorOnly"></div>
+            </div>
+            <div class="svc-row">
+              <span class="svc-tag">Starting prices</span>
+              <button class="svc-book" type="button" data-book="standardInteriorOnly">Book</button>
+            </div>
+          </article>
+          <article class="svc">
+            <div class="svc-num">05</div>
+            <div>
+              <h3>Premium Interior Only</h3>
+              <p>Interior only, with steam and extraction.</p>
+              <div data-tiers="premiumInteriorOnly"></div>
+            </div>
+            <div class="svc-row">
+              <span class="svc-tag">Starting prices</span>
+              <button class="svc-book" type="button" data-book="premiumInteriorOnly">Book</button>
+            </div>
+          </article>
+          <article class="svc">
+            <div class="svc-num">06</div>
+            <div>
+              <h3>Pet Hair Removal</h3>
+              <p>Optional add-on on a detail. Starting price, before tax, and it can go up depending on how much hair is in the vehicle. Choose it in the booking summary.</p>
+            </div>
+            <div class="svc-row">
+              <span class="svc-tag" data-price-key="petHair"></span>
+            </div>
+          </article>
+          <article class="svc">
+            <div class="svc-num">07</div>
+            <div>
+              <h3>Acid Wash</h3>
+              <p>Add-on for Exterior Only, Standard Interior &amp; Exterior, and Premium Interior &amp; Exterior. The price is before tax and can go up depending on condition. Choose it in the booking summary.</p>
+              <div data-tiers="acidWash"></div>
+            </div>
+          </article>
+          <article class="svc">
+            <div class="svc-num">08</div>
+            <div>
               <h3>Maintenance</h3>
               <p>Upkeep between fuller details. Ask Oscar for the starting price for your vehicle.</p>
             </div>
@@ -178,7 +221,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">05</div>
+            <div class="svc-num">09</div>
             <div>
               <h3>Maintenance Detail</h3>
               <p>The upkeep detail, inside and out, that keeps a clean car clean between full details. A maintenance detail takes a quote and authorization from O.G. first: you must either have had a detail done by O.G. already, or get O.G.'s authorization before you can book it.</p>
@@ -189,7 +232,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">06</div>
+            <div class="svc-num">10</div>
             <div>
               <h3>Interior &amp; Exterior Wash</h3>
               <p>The full wash, inside and out — hand wash, wheels and tires, and glass outside; vacuum, wipe-down, and glass inside.</p>
@@ -200,7 +243,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">07</div>
+            <div class="svc-num">11</div>
             <div>
               <h3>Deep Interior</h3>
               <p>Deep interior work on its own: seats and carpets extracted, leather cleaned and conditioned, vents, trim, and glass detailed until the cabin feels right.</p>
@@ -211,7 +254,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">08</div>
+            <div class="svc-num">12</div>
             <div>
               <h3>Signature Detail</h3>
               <p>Oscar's signature detail. The quote depends on the vehicle and its condition.</p>
@@ -222,7 +265,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">09</div>
+            <div class="svc-num">13</div>
             <div>
               <h3>Paint Correction</h3>
               <p>Swirls and haze cut out panel by panel until the reflections run straight and sharp again.</p>
@@ -233,7 +276,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">10</div>
+            <div class="svc-num">14</div>
             <div>
               <h3>Interior Restoration</h3>
               <p>For cabins that need more than a detail — neglected interiors brought back piece by piece. For a full restoration, interior photos from all 4 sides are required. Text them to <a class="js-phone" href="sms:+13853468125">385-346-8125</a> when you book.</p>
@@ -244,7 +287,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">11</div>
+            <div class="svc-num">15</div>
             <div>
               <h3>Polish Only</h3>
               <p>Just the polish — a gloss-focused pass that wakes up tired paint with more depth and reflection. Up to a 5-step polish is available.</p>
@@ -255,7 +298,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">12</div>
+            <div class="svc-num">16</div>
             <div>
               <h3>Polish &amp; Wax</h3>
               <p>Machine polish that cuts swirls and haze and brings back the gloss, finished with a coat of wax to seal in the shine and protect the paint.</p>
@@ -266,7 +309,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">13</div>
+            <div class="svc-num">17</div>
             <div>
               <h3>Ceramic Coating — 12 Month</h3>
               <p>A year of ceramic protection: deep gloss, strong water beading, and paint that stays cleaner and washes easier.</p>
@@ -277,7 +320,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">14</div>
+            <div class="svc-num">18</div>
             <div>
               <h3>Ceramic Coating — 3 to 5 Year</h3>
               <p>The long-term coating: years of hard, glossy protection against Utah sun, road salt, and daily driving.</p>
@@ -288,7 +331,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">15</div>
+            <div class="svc-num">19</div>
             <div>
               <h3>Wheel Ceramic Coating</h3>
               <p>Ceramic protection for the wheels — brake dust and road grime rinse off easier and the finish stays bright.</p>
@@ -299,19 +342,18 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">16</div>
+            <div class="svc-num">20</div>
             <div>
               <h3>Interior Leather Ceramic Coating</h3>
               <p>Ceramic protection for interior leather — seats and leather trim coated to resist stains, spills, fading, and everyday wear while keeping the leather soft and easy to clean.</p>
-              <div data-tiers="interiorLeatherCeramicCoating"></div>
             </div>
             <div class="svc-row">
-              <span class="svc-tag">Starting prices</span>
+              <span class="svc-tag" data-price-key="interiorLeatherCeramicCoating"></span>
               <button class="svc-book" type="button" data-book="interiorLeatherCeramicCoating">Book</button>
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">17</div>
+            <div class="svc-num">21</div>
             <div>
               <h3>Window Tint</h3>
               <p>Window tint for heat rejection, glare cut, and privacy — clean edges and an even, factory look.</p>
@@ -322,7 +364,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">18</div>
+            <div class="svc-num">22</div>
             <div>
               <h3>Wraps</h3>
               <p>Vinyl wraps that change the look of the car or truck while protecting the paint underneath.</p>
@@ -333,19 +375,18 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">19</div>
+            <div class="svc-num">23</div>
             <div>
               <h3>Semis</h3>
               <p>Semi detailing, inside the cab, outside the rig, or both — cabs deep-cleaned and exteriors washed and shined.</p>
-              <div data-tiers="semis"></div>
             </div>
             <div class="svc-row">
-              <span class="svc-tag">Starting prices</span>
+              <span class="svc-tag" data-price-key="semis"></span>
               <button class="svc-book" type="button" data-book="semis">Book</button>
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">20</div>
+            <div class="svc-num">24</div>
             <div>
               <h3>Engine Bay Cleaning</h3>
               <p>The engine bay degreased, cleaned, and dressed — grime and buildup gone, hoses and plastics looking factory-fresh.</p>
@@ -356,7 +397,7 @@
             </div>
           </article>
           <article class="svc">
-            <div class="svc-num">21</div>
+            <div class="svc-num">25</div>
             <div>
               <h3>Commercial Accounts</h3>
               <p>Recurring detailing for businesses and fleets — interior services, exterior services, or both, kept on schedule so your vehicles always look the part.</p>
@@ -1158,6 +1199,7 @@
             <a class="btn btn-dark" href="#filming" data-goto="filming">Filming</a>
             <a class="btn btn-dark" href="#podcast" data-goto="podcast">Podcast editing</a>
             <a class="btn btn-dark" href="#event-editing" data-goto="event-editing">Event editing</a>
+            <a class="btn btn-dark" id="generalSchedule" href="https://app.acuityscheduling.com/schedule.php?owner=40723502" target="_blank" rel="noopener">Full scheduler</a>
           </div>
         </div>
         <div class="book-notes">

@@ -43,36 +43,60 @@ window.OG_CONFIG = {
   },
 
   /*
-    One shared Acuity calendar for detailing, filming, and editing.
-    Each key is one appointment type. Paste that type's full URL, or
-    leave "" and the button falls back to a text message.
+    One shared Acuity calendar. A string is one appointment type.
+    An object maps a vehicle-size id to that size's appointment type.
+    Leave "" where Oscar has not created a type yet.
   */
+  acuityOwner: "40723502",
   bookingUrls: {
-    standardInteriorExterior: "",
-    premiumInteriorExterior: "",
-    exteriorOnly: "",
+    exteriorOnly: {
+      "sedan-or-mid-small": "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415453",
+      large: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415467"
+    },
+    standardInteriorExterior: {
+      sedan: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415474",
+      "mid-small": "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415481",
+      large: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415490"
+    },
+    premiumInteriorExterior: {
+      sedan: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415549",
+      "mid-small": "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415491",
+      large: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415497"
+    },
+    standardInteriorOnly: {
+      sedan: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415555",
+      "mid-small": "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415514",
+      large: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415520"
+    },
+    premiumInteriorOnly: {
+      sedan: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415560",
+      "mid-small": "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415531",
+      large: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415539"
+    },
+    maintenanceDetail: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415606",
+    interiorExteriorWash: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415617",
+    polishOnly: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415624",
+    polishAndWax: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415635",
+    deepInterior: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415643",
+    signatureDetail: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415650",
+    ceramicCoating12Month: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415662",
+    ceramicCoating3to5Year: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415676",
+    wheelCeramicCoating: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415698",
+    interiorLeatherCeramicCoating: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415712",
+    paintCorrection: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415716",
+    interiorRestoration: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415637",
+    windowTint: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415747",
+    wraps: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415761",
+    semis: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415766",
+    filming: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415772",
+    podcastEditing: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415785",
+    eventEditing: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415792",
+    consultationPhone15: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415803",
+    consultationInPerson: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415812",
+    general: "https://app.acuityscheduling.com/schedule.php?owner=40723502",
+    /* No appointment type was provided for these. */
     maintenance: "",
-    ceramicCoating12Month: "",
-    ceramicCoating3to5Year: "",
-    wheelCeramicCoating: "",
-    interiorLeatherCeramicCoating: "",
-    maintenanceDetail: "",
-    interiorExteriorWash: "",
-    polishOnly: "",
-    polishAndWax: "",
-    deepInterior: "",
-    signatureDetail: "",
-    paintCorrection: "",
-    interiorRestoration: "",
-    windowTint: "",
-    wraps: "",
-    semis: "",
-    filming: "",
-    podcastEditing: "",
-    eventEditing: "",
-    consultationPhone15: "",
-    consultationInPerson: "",
-    /* Already on the site, not part of the required slot list. */
+    petHair: "",
     engineBay: "",
     commercialAccounts: ""
   },
@@ -139,55 +163,67 @@ window.OG_CONFIG = {
       kind: "tiers",
       tiers: [
         { id: "sedan-or-mid-small", label: "Sedan or midsize/small truck", amount: 85 },
-        { id: "large", label: "Large SUV, three-row, van, or large truck", amount: 105 }
+        { id: "large", label: "Large SUV, 3-row, van, or large truck", amount: 105 }
       ]
     },
     standardInteriorExterior: {
       kind: "tiers",
       tiers: [
-        { id: "sedan", label: "Sedan", amount: 190 },
-        { id: "mid-small", label: "Midsize or small truck", amount: 200 },
-        { id: "large", label: "Large or three-row", amount: 220 }
+        { id: "sedan", label: "Sedan", amount: 200 },
+        { id: "mid-small", label: "Midsize/small truck", amount: 220 },
+        { id: "large", label: "Large SUV, 3-row, van, or large truck", amount: 240 }
       ]
     },
     premiumInteriorExterior: {
       kind: "tiers",
       tiers: [
         { id: "sedan", label: "Sedan", amount: 250 },
-        { id: "mid-small", label: "Midsize or small truck", amount: 280 },
-        { id: "large", label: "Large or three-row", amount: 315 }
+        { id: "mid-small", label: "Midsize/small truck", amount: 280 },
+        { id: "large", label: "Large SUV, 3-row, van, or large truck", amount: 315 }
+      ]
+    },
+    standardInteriorOnly: {
+      kind: "tiers",
+      tiers: [
+        { id: "sedan", label: "Sedan", amount: 150 },
+        { id: "mid-small", label: "Midsize/small truck", amount: 160 },
+        { id: "large", label: "Large SUV, 3-row, van, or large truck", amount: 180 }
+      ]
+    },
+    premiumInteriorOnly: {
+      kind: "tiers",
+      tiers: [
+        { id: "sedan", label: "Sedan", amount: 200 },
+        { id: "mid-small", label: "Midsize/small truck", amount: 225 },
+        { id: "large", label: "Large SUV, 3-row, van, or large truck", amount: 250 }
+      ]
+    },
+    petHair: { kind: "starting", amount: 30 },
+    acidWash: {
+      kind: "tiers",
+      appliesTo: ["exteriorOnly", "standardInteriorExterior", "premiumInteriorExterior"],
+      tiers: [
+        { id: "sedan", label: "Sedan", amount: 40 },
+        { id: "mid-small", label: "Midsize/small truck", amount: 50 },
+        { id: "large", label: "Large SUV, 3-row, van, or large truck", amount: 50 }
       ]
     },
     maintenance: { kind: "quote" },
-    maintenanceDetail: { kind: "starting", amount: 120, qualifier: "for sedans" },
-    interiorExteriorWash: { kind: "starting", amount: 250 },
-    deepInterior: { kind: "starting", amount: 140 },
+    maintenanceDetail: { kind: "quote" },
+    interiorExteriorWash: { kind: "quote" },
+    deepInterior: { kind: "quote" },
     signatureDetail: { kind: "quote" },
     paintCorrection: { kind: "quote" },
-    interiorRestoration: { kind: "starting", amount: 250 },
-    polishOnly: { kind: "starting", amount: 300 },
-    polishAndWax: { kind: "starting", amount: 350 },
-    ceramicCoating12Month: { kind: "starting", amount: 850 },
-    ceramicCoating3to5Year: { kind: "starting", amount: 850 },
-    wheelCeramicCoating: { kind: "starting", amount: 75, qualifier: "each wheel" },
-    interiorLeatherCeramicCoating: {
-      kind: "tiers",
-      tiers: [
-        { id: "small-cars", label: "Small cars", amount: 320 },
-        { id: "small-suvs", label: "Small SUVs", amount: 340 },
-        { id: "suvs-vans", label: "SUVs or vans", amount: 360 },
-        { id: "trucks", label: "Trucks", amount: 340 }
-      ]
-    },
-    windowTint: { kind: "starting", amount: 350 },
+    interiorRestoration: { kind: "quote" },
+    polishOnly: { kind: "quote" },
+    polishAndWax: { kind: "quote" },
+    ceramicCoating12Month: { kind: "quote" },
+    ceramicCoating3to5Year: { kind: "quote" },
+    wheelCeramicCoating: { kind: "quote" },
+    interiorLeatherCeramicCoating: { kind: "quote" },
+    windowTint: { kind: "quote" },
     wraps: { kind: "quote" },
-    semis: {
-      kind: "tiers",
-      tiers: [
-        { id: "twin", label: "Twin cabs", amount: 250 },
-        { id: "sleeper", label: "Sleepers", amount: 350 }
-      ]
-    },
+    semis: { kind: "quote" },
     engineBay: { kind: "starting", amount: 50 },
     commercialAccounts: { kind: "quote" },
 
@@ -255,6 +291,20 @@ window.OG_CONFIG = {
       group: "detail",
       bookingUrlKey: "premiumInteriorExterior",
       priceKey: "premiumInteriorExterior",
+      needsUtility: true
+    },
+    standardInteriorOnly: {
+      name: "Standard Interior Only",
+      group: "detail",
+      bookingUrlKey: "standardInteriorOnly",
+      priceKey: "standardInteriorOnly",
+      needsUtility: true
+    },
+    premiumInteriorOnly: {
+      name: "Premium Interior Only",
+      group: "detail",
+      bookingUrlKey: "premiumInteriorOnly",
+      priceKey: "premiumInteriorOnly",
       needsUtility: true
     },
     maintenance: {

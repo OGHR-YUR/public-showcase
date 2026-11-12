@@ -4,9 +4,20 @@
   if (!OG) return;
 
   function cleanUrl(url) {
-    var value = (url || "").trim();
+    if (typeof url !== "string") return "";
+    var value = url.trim();
     if (!/^https?:\/\//i.test(value)) return "";
     return value;
+  }
+
+  /* Sized services store a URL per vehicle id. Everything else is one string. */
+  function resolveBookingUrl(svc, tier) {
+    var raw = OG.bookingUrls[svc.bookingUrlKey];
+    if (raw && typeof raw === "object") {
+      if (tier && raw[tier.id]) return cleanUrl(raw[tier.id]);
+      return "";
+    }
+    return cleanUrl(raw);
   }
 
   function dollars(amount) {
@@ -22,14 +33,17 @@
   }
 
   /* Tax and deposit use integer cents so 8.45% doesn't drift. */
-  function calcTotals(amountDollars, pay) {
-    var base = Math.round(Number(amountDollars) * 100);
+  function calcFromCents(baseCents, pay) {
     var taxBp = Math.round(OG.policies.taxPercent * 100);
     var depBp = Math.round(OG.policies.depositPercent * 100);
-    var tax = pay === "card" ? Math.round(base * taxBp / 10000) : 0;
-    var total = base + tax;
+    var tax = pay === "card" ? Math.round(baseCents * taxBp / 10000) : 0;
+    var total = baseCents + tax;
     var deposit = Math.round(total * depBp / 10000);
-    return { base: base, tax: tax, total: total, deposit: deposit };
+    return { base: baseCents, tax: tax, total: total, deposit: deposit };
+  }
+
+  function calcTotals(amountDollars, pay) {
+    return calcFromCents(Math.round(Number(amountDollars) * 100), pay);
   }
 
   window.OG_CALC = calcTotals;
@@ -174,6 +188,11 @@
   }
 
   document.querySelectorAll(".js-consult").forEach(applyConsultLink);
+
+  var generalSchedule = document.getElementById("generalSchedule");
+  if (generalSchedule && typeof OG.bookingUrls.general === "string" && cleanUrl(OG.bookingUrls.general)) {
+    generalSchedule.setAttribute("href", OG.bookingUrls.general);
+  }
 
   var phoneConsultUrl = cleanUrl(OG.bookingUrls.consultationPhone15);
   var textFlow = document.getElementById("consultTextFlow");
@@ -500,25 +519,88 @@
     return null;
   }
 
+  function acidApplies(svc) {
+    var spec = OG.prices.acidWash;
+    return !!(spec && spec.appliesTo && spec.appliesTo.indexOf(svc.priceKey) !== -1);
+  }
+
+  function serviceAmount(price, tier) {
+    if (tier) return tier.amount;
+    if (price && price.amount != null && price.kind !== "quote" && price.kind !== "label") return price.amount;
+    return null;
+  }
+
+  function tierAmount(sizeId) {
+    var tiers = (OG.prices.acidWash && OG.prices.acidWash.tiers) || [];
+    var i;
+    for (i = 0; i < tiers.length; i++) {
+      if (tiers[i].id === sizeId) return tiers[i].amount;
+    }
+    return 0;
+  }
+
+  function acidChoicePreview(tier) {
+    if (!tier) return null;
+    if (tier.id === "sedan" || tier.id === "mid-small" || tier.id === "large") return tierAmount(tier.id);
+    return null;
+  }
+
+  function acidChoice(tier) {
+    if (!summaryState.acidWash) return { amount: 0, pending: false };
+    var size = tier && (tier.id === "sedan" || tier.id === "mid-small" || tier.id === "large") ? tier.id : summaryState.acidSize;
+    var tiers = (OG.prices.acidWash && OG.prices.acidWash.tiers) || [];
+    var i;
+    for (i = 0; i < tiers.length; i++) {
+      if (tiers[i].id === size) return { amount: tiers[i].amount, pending: false, label: tiers[i].label };
+    }
+    return { amount: 0, pending: true };
+  }
+
+  function quoteAddons(svc, price, tier) {
+    var base = serviceAmount(price, tier);
+    var pet = 0;
+    var acid = { amount: 0, pending: false };
+    if (base != null && svc.needsUtility && summaryState.petHair && OG.prices.petHair) pet = OG.prices.petHair.amount;
+    if (base != null && acidApplies(svc)) acid = acidChoice(tier);
+    return { base: base, pet: pet, acid: acid };
+  }
+
   function summaryReady(svc, price) {
     if (svc.needsUtility && !summaryState.utility) return false;
     if (price && price.tiers && !selectedTier(price)) return false;
     if (!summaryState.pay) return false;
+    var extras = quoteAddons(svc, price, selectedTier(price));
+    if (extras.acid.pending) return false;
     return true;
   }
 
-  function buildSms(svc, price, tier, totals) {
+  function priceBreakdown(svc, price, tier, pay) {
+    var extras = quoteAddons(svc, price, tier);
+    if (extras.base == null || !pay || extras.acid.pending) return null;
+    var serviceCents = Math.round(extras.base * 100);
+    var petCents = Math.round((extras.pet || 0) * 100);
+    var acidCents = Math.round((extras.acid.amount || 0) * 100);
+    return {
+      service: serviceCents,
+      pet: petCents,
+      acid: acidCents,
+      totals: calcFromCents(serviceCents + petCents + acidCents, pay)
+    };
+  }
+
+  function buildSms(svc, price, tier, parts) {
     var lines = ["Booking request", "Service: " + svc.name];
     if (tier) lines.push("Vehicle: " + tier.label);
     if (price && price.kind === "quote") lines.push("Price: Contact for quote / starting price on request");
     else if (tier) lines.push("Starting price: " + dollars(tier.amount));
     else if (price && price.amount != null) lines.push("Price: " + priceText(svc.priceKey));
+    if (parts && parts.acid) lines.push("Acid wash: " + money(parts.acid));
+    if (parts && parts.pet) lines.push("Pet hair removal: " + money(parts.pet));
     lines.push("Pay: " + (summaryState.pay === "card" ? "Card" : "Cash"));
-    if (totals) {
-      lines.push("Service price: " + money(totals.base));
-      lines.push("Tax: " + money(totals.tax));
-      lines.push("Total: " + money(totals.total));
-      lines.push("Deposit (" + OG.policies.depositPercent + "%): " + money(totals.deposit));
+    if (parts) {
+      lines.push("Tax: " + money(parts.totals.tax));
+      lines.push("Total: " + money(parts.totals.total));
+      lines.push("Deposit (" + OG.policies.depositPercent + "%): " + money(parts.totals.deposit));
     }
     if (svc.needsUtility) lines.push("Water and power: " + utilityLabel(summaryState.utility));
     lines.push("Shared calendar: detailing, filming, and editing.");
@@ -530,10 +612,12 @@
     var svc = summaryState.service;
     var price = priceRecord(svc.priceKey);
     var tier = selectedTier(price);
-    var url = cleanUrl(OG.bookingUrls[svc.bookingUrlKey]);
-    var amount = tier ? tier.amount : price && price.amount != null && price.kind !== "quote" && price.kind !== "label" ? price.amount : null;
+    var url = resolveBookingUrl(svc, tier);
+    var amount = serviceAmount(price, tier);
     var ready = summaryReady(svc, price);
-    var totals = ready && amount != null ? calcTotals(amount, summaryState.pay) : null;
+    var parts = ready ? priceBreakdown(svc, price, tier, summaryState.pay) : null;
+    var showPet = amount != null && svc.needsUtility && OG.prices.petHair;
+    var showAcid = amount != null && acidApplies(svc);
 
     var keepScroll = card.scrollTop;
     var html = "";
@@ -566,24 +650,43 @@
       html += '<p class="summary-fine">Appointments that start after ' + esc(OG.fees.detailingAfterHoursAfter) + " add a flat " + dollars(OG.fees.detailingAfterHours) + " after-hours fee to the balance.</p>";
     }
 
+    if (showAcid || showPet) {
+      html += '<p class="summary-label">Add-ons</p><div class="choice-set">';
+      if (showAcid) {
+        var acidPreview = acidChoicePreview(tier);
+        html += '<label class="choice"><input type="checkbox" id="addAcid"' + (summaryState.acidWash ? " checked" : "") + "> <span>Add acid wash" + (acidPreview ? " — " + dollars(acidPreview) : "") + "</span></label>";
+        if (summaryState.acidWash && tier && tier.id === "sedan-or-mid-small") {
+          html += '<label class="choice"><input type="radio" name="acidSize" value="sedan"' + (summaryState.acidSize === "sedan" ? " checked" : "") + "> <span>Sedan — " + dollars(tierAmount("sedan")) + "</span></label>";
+          html += '<label class="choice"><input type="radio" name="acidSize" value="mid-small"' + (summaryState.acidSize === "mid-small" ? " checked" : "") + "> <span>Midsize/small truck — " + dollars(tierAmount("mid-small")) + "</span></label>";
+        }
+      }
+      if (showPet) {
+        html += '<label class="choice"><input type="checkbox" id="addPet"' + (summaryState.petHair ? " checked" : "") + "> <span>Add pet hair removal — " + dollars(OG.prices.petHair.amount) + " starting</span></label>";
+      }
+      html += "</div>";
+      html += '<p class="summary-fine">Add-on prices are before tax and can go up depending on condition.</p>';
+    }
+
     html += '<p class="summary-label">How you\'ll pay the balance</p>';
     html += '<div class="choice-set">';
     html += '<label class="choice"><input type="radio" name="pay" value="card"' + (summaryState.pay === "card" ? " checked" : "") + "> <span>Card</span></label>";
     html += '<label class="choice"><input type="radio" name="pay" value="cash"' + (summaryState.pay === "cash" ? " checked" : "") + "> <span>Cash</span></label>";
     html += "</div>";
 
-    if (totals) {
+    if (parts) {
       html += '<div class="math">';
-      html += '<div class="math-row"><span>Service price</span><strong>' + money(totals.base) + "</strong></div>";
+      html += '<div class="math-row"><span>Service price</span><strong>' + money(parts.service) + "</strong></div>";
+      if (parts.acid) html += '<div class="math-row"><span>Acid wash</span><strong>' + money(parts.acid) + "</strong></div>";
+      if (parts.pet) html += '<div class="math-row"><span>Pet hair removal</span><strong>' + money(parts.pet) + "</strong></div>";
       if (summaryState.pay === "card") {
-        html += '<div class="math-row"><span>Tax (' + OG.policies.taxPercent + "%)</span><strong>" + money(totals.tax) + "</strong></div>";
+        html += '<div class="math-row"><span>Tax (' + OG.policies.taxPercent + "%)</span><strong>" + money(parts.totals.tax) + "</strong></div>";
       } else {
         html += '<div class="math-row"><span>Tax</span><strong>' + money(0) + "</strong></div>";
       }
-      html += '<div class="math-row total"><span>Total</span><strong>' + money(totals.total) + "</strong></div>";
-      html += '<div class="math-row total"><span>Deposit due (' + OG.policies.depositPercent + "%)</span><strong>" + money(totals.deposit) + "</strong></div>";
+      html += '<div class="math-row total"><span>Total</span><strong>' + money(parts.totals.total) + "</strong></div>";
+      html += '<div class="math-row total"><span>Deposit due (' + OG.policies.depositPercent + "%)</span><strong>" + money(parts.totals.deposit) + "</strong></div>";
       html += "</div>";
-      if (summaryState.pay === "cash") html += '<p class="summary-fine">Cash has no tax. The deposit is ' + OG.policies.depositPercent + "% of the service price.</p>";
+      if (summaryState.pay === "cash") html += '<p class="summary-fine">Cash has no tax. The deposit is ' + OG.policies.depositPercent + "% of the total.</p>";
       else html += '<p class="summary-fine">Card tax is ' + OG.policies.taxPlace + " (" + OG.policies.taxPercent + "%, Utah Tax Commission location code " + OG.policies.taxLocationCode + "). The deposit is " + OG.policies.depositPercent + "% of the total after tax.</p>";
     } else if (ready && price && price.kind === "quote") {
       html += '<p class="summary-fine">Once Oscar sets the price, a card payment adds tax at ' + OG.policies.taxPercent + "% as its own line. Cash has no tax. The deposit is " + OG.policies.depositPercent + "% of that total.</p>";
@@ -601,7 +704,7 @@
     html += '<button class="btn btn-red" type="button" id="summaryGo"' + (ready ? "" : " disabled") + ">" + label + "</button>";
     html += "</div>";
     if (ready && url) {
-      html += '<p class="summary-fine"><a id="summaryText" href="' + esc(smsHref(buildSms(svc, price, tier, totals))) + '">Text these details to ' + esc(OG.phoneDisplay) + "</a> if you also want them in writing.</p>";
+      html += '<p class="summary-fine"><a id="summaryText" href="' + esc(smsHref(buildSms(svc, price, tier, parts))) + '">Text these details to ' + esc(OG.phoneDisplay) + "</a> if you also want them in writing.</p>";
     }
 
     card.innerHTML = html;
@@ -625,15 +728,35 @@
         renderSummary();
       });
     });
+    var addAcid = document.getElementById("addAcid");
+    if (addAcid) {
+      addAcid.addEventListener("change", function () {
+        summaryState.acidWash = addAcid.checked;
+        renderSummary();
+      });
+    }
+    var addPet = document.getElementById("addPet");
+    if (addPet) {
+      addPet.addEventListener("change", function () {
+        summaryState.petHair = addPet.checked;
+        renderSummary();
+      });
+    }
+    card.querySelectorAll('input[name="acidSize"]').forEach(function (input) {
+      input.addEventListener("change", function () {
+        summaryState.acidSize = input.value;
+        renderSummary();
+      });
+    });
     var go = document.getElementById("summaryGo");
     if (go) {
       go.addEventListener("click", function () {
         if (!summaryReady(svc, price)) return;
         var freshTier = selectedTier(price);
-        var freshAmount = freshTier ? freshTier.amount : amount;
-        var freshTotals = freshAmount != null ? calcTotals(freshAmount, summaryState.pay) : null;
-        if (url) window.open(url, "_blank", "noopener");
-        else window.location.href = smsHref(buildSms(svc, price, freshTier, freshTotals));
+        var freshUrl = resolveBookingUrl(svc, freshTier);
+        var freshParts = priceBreakdown(svc, price, freshTier, summaryState.pay);
+        if (freshUrl) window.open(freshUrl, "_blank", "noopener");
+        else window.location.href = smsHref(buildSms(svc, price, freshTier, freshParts));
       });
     }
   }
@@ -642,7 +765,7 @@
     var svc = OG.services[serviceId];
     if (!svc || !dialog) return;
     opener = trigger || document.activeElement;
-    summaryState = { service: svc, tierId: "", utility: "", pay: "" };
+    summaryState = { service: svc, tierId: "", utility: "", pay: "", petHair: false, acidWash: false, acidSize: "" };
     dialog.hidden = false;
     dialog.classList.add("open");
     renderSummary();
