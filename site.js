@@ -100,6 +100,12 @@
     el.textContent = dollars(amount);
   });
 
+  document.querySelectorAll("[data-fee-text]").forEach(function (el) {
+    var value = OG.fees[el.getAttribute("data-fee-text")];
+    if (value == null) return;
+    el.textContent = String(value);
+  });
+
   document.querySelectorAll("[data-fee-plain]").forEach(function (el) {
     var amount = OG.fees[el.getAttribute("data-fee-plain")];
     if (amount == null) return;
@@ -557,6 +563,7 @@
       html += '<label class="choice"><input type="radio" name="utility" value="bring"' + (summaryState.utility === "bring" ? " checked" : "") + "> <span>I prefer Oscar brings his own water and power source</span></label>";
       html += "</div>";
       html += '<p class="summary-fine">No travel fee within ' + OG.serviceArea.freeRadiusMiles + " miles of " + OG.serviceArea.base + ". Outside that, a travel fee applies. Oscar quotes the fee when you book.</p>";
+      html += '<p class="summary-fine">Appointments that start after ' + esc(OG.fees.detailingAfterHoursAfter) + " add a flat " + dollars(OG.fees.detailingAfterHours) + " after-hours fee to the balance.</p>";
     }
 
     html += '<p class="summary-label">How you\'ll pay the balance</p>';

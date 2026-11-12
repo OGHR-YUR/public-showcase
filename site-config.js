@@ -116,7 +116,9 @@ window.OG_CONFIG = {
   },
 
   fees: {
+    /* Flat fee added to the balance when a detailing appointment starts after this time. */
     detailingAfterHours: 50,
+    detailingAfterHoursAfter: "8 PM",
     filmingMidweek: 50,
     filmingExtraHour: 100,
     filmingHoursIncluded: 4
