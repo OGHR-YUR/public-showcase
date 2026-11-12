@@ -568,7 +568,7 @@
   function summaryReady(svc, price) {
     if (svc.needsUtility && !summaryState.utility) return false;
     if (price && price.tiers && !selectedTier(price)) return false;
-    if (!summaryState.pay) return false;
+    if (!svc.quoteForm && !summaryState.pay) return false;
     var extras = quoteAddons(svc, price, selectedTier(price));
     if (extras.acid.pending) return false;
     return true;
@@ -616,7 +616,7 @@
     var amount = serviceAmount(price, tier);
     var ready = summaryReady(svc, price);
     var parts = ready ? priceBreakdown(svc, price, tier, summaryState.pay) : null;
-    var showPet = amount != null && svc.needsUtility && OG.prices.petHair;
+    var showPet = amount != null && svc.needsUtility && OG.prices.petHair && !svc.quoteForm;
     var showAcid = amount != null && acidApplies(svc);
 
     var keepScroll = card.scrollTop;
@@ -667,13 +667,15 @@
       html += '<p class="summary-fine">Add-on prices are before tax and can go up depending on condition.</p>';
     }
 
+    if (!svc.quoteForm) {
     html += '<p class="summary-label">How you\'ll pay the balance</p>';
     html += '<div class="choice-set">';
     html += '<label class="choice"><input type="radio" name="pay" value="card"' + (summaryState.pay === "card" ? " checked" : "") + "> <span>Card</span></label>";
     html += '<label class="choice"><input type="radio" name="pay" value="cash"' + (summaryState.pay === "cash" ? " checked" : "") + "> <span>Cash</span></label>";
     html += "</div>";
+    }
 
-    if (parts) {
+    if (!svc.quoteForm && parts) {
       html += '<div class="math">';
       html += '<div class="math-row"><span>Service price</span><strong>' + money(parts.service) + "</strong></div>";
       if (parts.acid) html += '<div class="math-row"><span>Acid wash</span><strong>' + money(parts.acid) + "</strong></div>";
@@ -688,17 +690,22 @@
       html += "</div>";
       if (summaryState.pay === "cash") html += '<p class="summary-fine">Cash has no tax. The deposit is ' + OG.policies.depositPercent + "% of the total.</p>";
       else html += '<p class="summary-fine">Card tax is ' + OG.policies.taxPlace + " (" + OG.policies.taxPercent + "%, Utah Tax Commission location code " + OG.policies.taxLocationCode + "). The deposit is " + OG.policies.depositPercent + "% of the total after tax.</p>";
-    } else if (ready && price && price.kind === "quote") {
+    } else if (!svc.quoteForm && ready && price && price.kind === "quote") {
       html += '<p class="summary-fine">Once Oscar sets the price, a card payment adds tax at ' + OG.policies.taxPercent + "% as its own line. Cash has no tax. The deposit is " + OG.policies.depositPercent + "% of that total.</p>";
     }
 
-    html += '<p class="summary-fine">The deposit is non-refundable. If you reschedule, it rolls over. Cancel at least ' + OG.policies.cancellationCutoffHours + " hours before the appointment.</p>";
+    if (svc.quoteForm) {
+      html += '<p class="summary-fine">This opens a quote request. There is no deposit.</p>';
+      html += '<p class="summary-fine">Cancel at least ' + OG.policies.cancellationCutoffHours + " hours before the appointment.</p>";
+    } else {
+      html += '<p class="summary-fine">The deposit is non-refundable. If you reschedule, it rolls over. Cancel at least ' + OG.policies.cancellationCutoffHours + " hours before the appointment.</p>";
+    }
     html += '<p class="summary-fine">First-time clients can mention ' + dollars(OG.offers.firstDetailOff) + " off a first full detail. First responders and military can mention " + OG.offers.responderMilitaryPercent + "% off. Those come off the final total.</p>";
 
     if (!url) html += '<p class="soon-note">Booking link coming soon</p>';
 
     var label = "Choose the options above to continue";
-    if (ready && url) label = "Continue to book";
+    if (ready && url) label = svc.quoteForm ? "Request a quote" : "Continue to book";
     else if (ready) label = "Text to book";
     html += '<div class="summary-actions">';
     html += '<button class="btn btn-red" type="button" id="summaryGo"' + (ready ? "" : " disabled") + ">" + label + "</button>";

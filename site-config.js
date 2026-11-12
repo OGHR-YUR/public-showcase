@@ -95,10 +95,10 @@ window.OG_CONFIG = {
     consultationInPerson: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415812",
     general: "https://app.acuityscheduling.com/schedule.php?owner=40723502",
     /* No appointment type was provided for these. */
-    maintenance: "",
+    maintenance: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100415606",
     petHair: "",
-    engineBay: "",
-    commercialAccounts: ""
+    engineBay: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100416389",
+    commercialAccounts: "https://app.acuityscheduling.com/schedule.php?owner=40723502&appointmentType=100416403"
   },
 
   /* Every show is ticketed. Paste a ticket URL or leave "". */
@@ -312,7 +312,8 @@ window.OG_CONFIG = {
       group: "detail",
       bookingUrlKey: "maintenance",
       priceKey: "maintenance",
-      needsUtility: true
+      needsUtility: true,
+      quoteForm: true
     },
     maintenanceDetail: {
       name: "Maintenance Detail",
@@ -424,14 +425,16 @@ window.OG_CONFIG = {
       group: "detail",
       bookingUrlKey: "engineBay",
       priceKey: "engineBay",
-      needsUtility: true
+      needsUtility: true,
+      quoteForm: true
     },
     commercialAccounts: {
       name: "Commercial Accounts",
       group: "detail",
       bookingUrlKey: "commercialAccounts",
       priceKey: "commercialAccounts",
-      needsUtility: true
+      needsUtility: true,
+      quoteForm: true
     },
     filmingConcert: {
       name: "Filming — Concert / Live Show",
