@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <meta name="description" content="O.G.Products — Shopify merch and an affiliate catalog of 134 picks. No checkout on this page. Part of Oscar G.'s site." />
+    <title>O.G.Products · Oscar G.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="sticky-shell">
+      <header class="topbar">
+        <div class="wrap topbar-in">
+          <a class="brand" href="../index.html#home">O.G.<span>Products</span></a>
+          <a class="phone-link" id="phoneLink" href="sms:+13853468125">385-346-8125</a>
+        </div>
+      </header>
+      <nav class="brand-nav" aria-label="Brands">
+        <div class="wrap brand-nav-in">
+          <a class="brand-link" href="../index.html#home">Home</a>
+          <a class="brand-link" href="../index.html#services">O.G.AutoSpa</a>
+          <a class="brand-link" href="../index.html#filming">O.G.Productions</a>
+          <a class="brand-link" href="../index.html#podcast">O.G.Edits</a>
+          <a class="brand-link" href="./" aria-current="page">O.G.Products</a>
+        </div>
+      </nav>
+    </div>
+
+    <main class="wrap products-page">
+      <section>
+        <div class="sec-head"><h2>O.G.Products</h2><div class="rule" aria-hidden="true"></div></div>
+        <p class="sec-intro">Merch checks out on Shopify. The catalog is affiliate links to Amazon. This page does not take payment for either.</p>
+
+        <div class="price-banner" id="passwordNote">The Shopify store password stays on until Oscar fully releases it. Shop links open Shopify, which shows the password page until then.</div>
+
+        <h3 class="ve-h4">Merch</h3>
+        <div class="pricing-grid cols-3">
+          <article class="price-card">
+            <h4>Racing tee</h4>
+            <p>Shop the racing tee on Shopify.</p>
+            <a class="svc-book pkg-book" id="teeLink" href="https://11u81s-f0.myshopify.com/collections/all" target="_blank" rel="noopener">Shop on Shopify</a>
+          </article>
+          <article class="price-card">
+            <h4>Hoodie</h4>
+            <p>Shop the hoodie on Shopify.</p>
+            <a class="svc-book pkg-book" id="hoodieLink" href="https://11u81s-f0.myshopify.com/collections/all" target="_blank" rel="noopener">Shop on Shopify</a>
+          </article>
+          <article class="price-card">
+            <h4>Shoulder bags</h4>
+            <p>Eight shoulder bags, <strong id="bagPrice">$180</strong> each. Checkout stays on Shopify.</p>
+            <a class="svc-book pkg-book" id="bagsLink" href="https://11u81s-f0.myshopify.com/collections/all" target="_blank" rel="noopener">Shop the bags</a>
+          </article>
+        </div>
+
+        <div class="bag-grid" id="bagGrid" style="margin-top: 18px"></div>
+
+        <h3 class="ve-h4">Affiliate catalog</h3>
+        <p class="sec-intro" id="catalogIntro">The catalog of 134 picks lives on the existing O.G.Products site. Fashion, electronics, and phone gear. You leave this site to view them on Amazon.</p>
+        <a class="btn btn-red" id="catalogLink" href="https://ogproducts.netlify.app" target="_blank" rel="noopener">Browse the 134 picks</a>
+        <div class="disclosure">
+          <p><strong>Affiliate disclosure.</strong> O.G.Products is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program. Some links in the catalog are affiliate links. If you buy through them, Oscar may earn a commission. Prices, tax, and checkout are on Amazon. This site does not sell those items and does not add a card or cash total for them.</p>
+        </div>
+
+        <p class="ve-note" style="margin-top: 22px">Detailing, filming, and edits are on the <a href="../index.html#home">front door</a>. Questions about a film or an edit: <a id="filmEmail" href="mailto:ogproductions385@gmail.com">ogproductions385@gmail.com</a>.</p>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span class="fname">Oscar G. · O.G.Products</span>
+        <span><a href="../index.html#home">Back to all four brands</a></span>
+      </div>
+    </footer>
+
+    <script src="../site-config.js"></script>
+    <script>
+      (function () {
+        var OG = window.OG_CONFIG;
+        if (!OG) return;
+
+        function clean(url) {
+          var value = (url || "").trim();
+          return /^https?:\/\//i.test(value) ? value : "";
+        }
+
+        function shopHref(specific) {
+          var direct = clean(specific);
+          if (direct) return direct;
+          var store = clean(OG.shopify.storeUrl);
+          if (!store) return "";
+          return store.replace(/\/$/, "") + "/collections/all";
+        }
+
+        function setShop(id, specific) {
+          var link = document.getElementById(id);
+          if (!link) return;
+          var href = shopHref(specific);
+          if (!href) {
+            link.removeAttribute("href");
+            link.setAttribute("role", "button");
+            link.setAttribute("aria-disabled", "true");
+            link.textContent = "Shopify link coming soon";
+            return;
+          }
+          link.setAttribute("href", href);
+        }
+
+        setShop("teeLink", OG.shopify.racingTeeUrl);
+        setShop("hoodieLink", OG.shopify.hoodieUrl);
+        setShop("bagsLink", OG.shopify.shoulderBagsUrl);
+
+        var bagPrice = document.getElementById("bagPrice");
+        if (bagPrice && OG.prices.shoulderBag) {
+          bagPrice.textContent = "$" + Number(OG.prices.shoulderBag.amount).toLocaleString("en-US");
+        }
+
+        var phone = document.getElementById("phoneLink");
+        if (phone) {
+          phone.textContent = OG.phoneDisplay;
+          phone.setAttribute("href", "sms:" + OG.phoneSms);
+        }
+
+        var film = document.getElementById("filmEmail");
+        if (film) {
+          film.textContent = OG.emails.filmingAndEdits;
+          film.setAttribute("href", "mailto:" + OG.emails.filmingAndEdits);
+        }
+
+        var note = document.getElementById("passwordNote");
+        if (note && !OG.shopify.passwordProtected) note.hidden = true;
+
+        var catalog = document.getElementById("catalogLink");
+        var intro = document.getElementById("catalogIntro");
+        var count = OG.catalog && OG.catalog.pickCount;
+        if (catalog && OG.catalog && clean(OG.catalog.url)) catalog.setAttribute("href", OG.catalog.url);
+        if (catalog && count) catalog.textContent = "Browse the " + count + " picks";
+        if (intro && count) {
+          intro.textContent = "The catalog of " + count + " picks lives on the existing O.G.Products site. Fashion, electronics, and phone gear. You leave this site to view them on Amazon.";
+        }
+
+        var grid = document.getElementById("bagGrid");
+        var bagsHref = shopHref(OG.shopify.shoulderBagsUrl);
+        if (grid && OG.bags) {
+          OG.bags.forEach(function (bag) {
+            var card = document.createElement("a");
+            card.className = "bag-card";
+            card.target = "_blank";
+            card.rel = "noopener";
+            if (bagsHref) card.href = bagsHref;
+            var img = document.createElement("img");
+            img.src = "images/" + bag.image;
+            img.alt = bag.name;
+            var caption = document.createElement("p");
+            caption.textContent = bag.name;
+            card.appendChild(img);
+            card.appendChild(caption);
+            grid.appendChild(card);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
