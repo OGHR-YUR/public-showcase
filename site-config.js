@@ -5,7 +5,7 @@
    Leave every booking URL and ticket URL as "" until you
    paste the real link. Do not put a placeholder URL here.
    ============================================================ */
-window.OG_CONFIG = {
+var OG_CONFIG = {
   publicName: "Oscar G.",
 
   phoneDisplay: "385-346-8125",
@@ -514,3 +514,6 @@ window.OG_CONFIG = {
     { name: "Cream Signature-Style Shoulder Bag – Taupe Trim", image: "bag-8.jpg" }
   ]
 };
+
+if (typeof window !== "undefined") window.OG_CONFIG = OG_CONFIG;
+if (typeof module !== "undefined" && module.exports) module.exports = OG_CONFIG;

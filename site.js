@@ -32,18 +32,15 @@
     return (cents < 0 ? "-" : "") + "$" + whole.toLocaleString("en-US") + "." + (frac < 10 ? "0" : "") + frac;
   }
 
-  /* Tax and deposit use integer cents so 8.45% doesn't drift. */
+  /* Tax and deposit use integer cents so 8.45% doesn't drift.
+     The formula is in pricing-math.js, loaded before this file.
+     The phone app imports that same file. */
   function calcFromCents(baseCents, pay) {
-    var taxBp = Math.round(OG.policies.taxPercent * 100);
-    var depBp = Math.round(OG.policies.depositPercent * 100);
-    var tax = pay === "card" ? Math.round(baseCents * taxBp / 10000) : 0;
-    var total = baseCents + tax;
-    var deposit = Math.round(total * depBp / 10000);
-    return { base: baseCents, tax: tax, total: total, deposit: deposit };
+    return window.OG_PRICING.calcFromCents(baseCents, pay, OG.policies);
   }
 
   function calcTotals(amountDollars, pay) {
-    return calcFromCents(Math.round(Number(amountDollars) * 100), pay);
+    return window.OG_PRICING.calcTotals(amountDollars, pay, OG.policies);
   }
 
   window.OG_CALC = calcTotals;

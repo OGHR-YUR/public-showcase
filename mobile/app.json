@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "O.G. AutoSpa",
+    "slug": "og-autospa",
+    "scheme": "ogautospa",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ogautospa.app"
+    },
+    "android": {
+      "package": "com.ogautospa.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#f4f1ec",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-status-bar"
+    ]
+  }
+}
